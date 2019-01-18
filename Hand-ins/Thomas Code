@@ -1,0 +1,85 @@
+//set the modes for the things we are using
+angleMode = "degrees";
+textAlign(CENTER,CENTER);
+ellipseMode(CENTER);
+
+//Define Clock object
+var Clock = function(position, sizeMult, colors) {
+    //sets up the time values
+    this.hr = 0;
+    this.min = 0;
+    this.sec = 0;
+    //sets up the angles for each
+    this.hourAngle = 0;
+    this.minuteAngle = 0;
+    this.secondAngle = 0;
+    //A PVector for position
+    this.pos = position;
+    //A decimal, normal size = 1.00
+    this.size = sizeMult;
+    //colors
+    this.faceColor = colors[0];
+    this.hColor = colors[1];
+    this.mColor = colors[2];
+    this.sColor = colors[3];
+};
+Clock.prototype.update = function() {
+    //get the time
+    this.hr = hour();
+    this.min = minute();
+    this.sec = second();
+    //turn them into angles
+    this.hourAngle = map((this.hr % 12), 0, 12, 0, 360);
+    this.minuteAngle = map(this.min, 0, 60, 0, 360);
+    this.secondAngle = map(this.sec, 0, 60, 0, 360);
+};
+Clock.prototype.draw = function() {
+    resetMatrix();
+    translate(this.pos.x,this.pos.y);
+    rotate(-90);
+    
+    //Clock Hands
+    //Second (Long, Red) Hand
+        strokeWeight(200*this.size);
+        pushMatrix();
+        rotate(this.secondAngle);
+        stroke(this.sColor);
+        line(0, 0, 100*this.size, 0);
+        popMatrix();
+        
+    //Minute (Medium, Purple) Hand
+        strokeWeight(300*this.size);
+        pushMatrix();
+        rotate(this.minuteAngle);
+        stroke(this.mColor);
+        line(0, 0, 75*this.size, 0);
+        popMatrix();
+        
+    //Hour (Short, Green) Hand
+        strokeWeight(300*this.size);
+        pushMatrix();
+        rotate(this.hourAngle);
+        stroke(this.hColor);
+        line(0, 0, 50*this.size, 0);
+        popMatrix();
+    //Center Dot
+        stroke(this.faceColor);
+        point(0, 0);
+};
+Clock.prototype.run = function(){
+    this.update();
+    this.draw();
+};
+//Make a Clock with regular colors and a white face
+var clock1pos = new PVector(200,200);
+var clock1Colors = [color(255, 255, 255, 150), color(214, 0, 0, 150), color(0, 153, 48, 150), color(140, 0, 255, 150)];
+var clock1 = new Clock(clock1pos, 1.00, clock1Colors);
+var x = 0;
+draw = function() {
+    var C1 = (0.5*sin(20*x)+0.5)*255;
+    var C2 = (0.5*cos(50*x)+0.5)*255;
+    var C3 = (0.5*sin(10*x)+0.5)*255;
+    background(C1, C2, C3);
+    clock1.run();
+    x++;
+};
